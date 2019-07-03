@@ -26,18 +26,6 @@
                                                     Command="{Binding Source={x:Static Application.Current}, Path=AppViewModel.NavigateCommand}"
                                                     CommandParameter="{x:Type views:LanguageSettingsPage}"
                                                     Value="{Binding Source={x:Static Application.Current}, Path=AppViewModel.Language, Converter={StaticResource LanguageConverter}}" />
-                                <views:SettingsItem Title="Recognition type"
-                                                    Icon="images/recognition_type.png"
-                                                    IconPressed="images/recognition_type_pressed.png"
-                                                    Command="{Binding Source={x:Static Application.Current}, Path=AppViewModel.NavigateCommand}"
-                                                    CommandParameter="{x:Type views:RecognitionTypeSettingsPage}"
-                                                    Value="{Binding Source={x:Static Application.Current}, Path=AppViewModel.RecognitionType, Converter={StaticResource RecognitionTypeConverter}}" />
-                                <views:SettingsItem Title="Silence detection"
-                                                    Icon="images/silence_detection.png"
-                                                    IconPressed="images/silence_detection_pressed.png"
-                                                    Command="{Binding Source={x:Static Application.Current}, Path=AppViewModel.NavigateCommand}"
-                                                    CommandParameter="{x:Type views:SilenceDetectionSettingsPage}"
-                                                    Value="{Binding Source={x:Static Application.Current}, Path=AppViewModel.SilenceDetection, Converter={StaticResource SilenceDetectionConverter}}" />
                             </x:Array>
                         </x:Arguments>
                     </views:SettingsItemsGroup>

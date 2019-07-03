@@ -51,7 +51,7 @@ namespace SpeechToText.ViewModels
         /// <summary>
         /// An instance of the STT model.
         /// </summary>
-        private SpeechToTextModel _sttModel;
+        private TextToSpeechModel _ttsModel;
 
         /// <summary>
         /// Private backing field for AvailableStartEndSounds property.
@@ -193,7 +193,7 @@ namespace SpeechToText.ViewModels
         /// <summary>
         /// Flag indicating if recognition is active.
         /// </summary>
-        public bool RecognitionActive => _sttModel.RecognitionActive;
+        public bool RecognitionActive => _ttsModel.RecognitionActive;
 
         /// <summary>
         /// A collection of languages supported by the service.
@@ -201,17 +201,17 @@ namespace SpeechToText.ViewModels
         /// The language is specified as an ISO 3166 alpha-2 two letter country-code
         /// followed by ISO 639-1 for the two-letter language code.
         /// </summary>
-        public IEnumerable<string> SupportedLanguages => _sttModel.SupportedLanguages;
+        public IEnumerable<string> SupportedLanguages => _ttsModel.SupportedLanguages;
 
         /// <summary>
         /// Current STT client language (code).
         /// </summary>
         public string Language
         {
-            get => _sttModel.Language;
+            get => _ttsModel.Language;
             private set
             {
-                _sttModel.Language = value;
+                _ttsModel.Language = value;
                 OnPropertyChanged();
             }
         }
@@ -220,17 +220,17 @@ namespace SpeechToText.ViewModels
         /// A collection of available recognition types.
         /// </summary>
         public IEnumerable<RecognitionType> SupportedRecognitionTypes =>
-            _sttModel.SupportedRecognitionTypes;
+            _ttsModel.SupportedRecognitionTypes;
 
         /// <summary>
         /// Current STT client recognition type.
         /// </summary>
         public RecognitionType RecognitionType
         {
-            get => _sttModel.RecognitionType;
+            get => _ttsModel.RecognitionType;
             private set
             {
-                _sttModel.RecognitionType = value;
+                _ttsModel.RecognitionType = value;
                 OnPropertyChanged();
             }
         }
@@ -240,10 +240,10 @@ namespace SpeechToText.ViewModels
         /// </summary>
         public SilenceDetection SilenceDetection
         {
-            get => _sttModel.SilenceDetection;
+            get => _ttsModel.SilenceDetection;
             private set
             {
-                _sttModel.SilenceDetection = value;
+                _ttsModel.SilenceDetection = value;
                 OnPropertyChanged();
             }
         }
@@ -261,7 +261,7 @@ namespace SpeechToText.ViewModels
         /// <summary>
         /// Flag indicating if STT client sounds (start, end) are turn on (wizard value).
         /// </summary>
-        public bool SoundOn => _sttModel.SoundOn;
+        public bool SoundOn => _ttsModel.SoundOn;
 
         /// <summary>
         /// Wizard value for sound on option.
@@ -312,11 +312,11 @@ namespace SpeechToText.ViewModels
             System.Console.WriteLine($"MainViewModel ctor");
             try
             {
-                _sttModel = new SpeechToTextModel(Application.Current.Properties);
-                _sttModel.ResultChanged += SttModelOnResultChanged;
-                _sttModel.RecognitionActiveStateChanged += SttModelOnRecognitionActiveStateChanged;
-                _sttModel.RecognitionError += SttModelOnRecognitionError;
-                _sttModel.ServiceError += SttModelOnServiceError;
+                _ttsModel = new TextToSpeechModel(Application.Current.Properties);
+                _ttsModel.ResultChanged += TtsModelOnResultChanged;
+                _ttsModel.RecognitionActiveStateChanged += SttModelOnRecognitionActiveStateChanged;
+                _ttsModel.RecognitionError += SttModelOnRecognitionError;
+                _ttsModel.ServiceError += SttModelOnServiceError;
             }
             catch (Exception ex)
             {
@@ -332,7 +332,7 @@ namespace SpeechToText.ViewModels
         /// <returns>The initialization task.</returns>
         public async Task Init()
         {
-            var priviligesGranted = await _sttModel.CheckPrivileges();
+            var priviligesGranted = await _ttsModel.CheckPrivileges();
 
             if (!priviligesGranted)
             {
@@ -346,7 +346,7 @@ namespace SpeechToText.ViewModels
                 return;
             }
 
-            await _sttModel.Init();
+            await _ttsModel.Init();
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace SpeechToText.ViewModels
         {
             try
             {
-                if (!_sttModel.Ready)
+                if (!_ttsModel.Ready)
                 {
                     return;
                 }
@@ -474,8 +474,8 @@ namespace SpeechToText.ViewModels
         private void ExecuteInitSoundsWizard(Type pageType)
         {
             WizardSoundOn = SoundOn;
-            WizardStartSound = _sttModel.StartSound;
-            WizardEndSound = _sttModel.EndSound;
+            WizardStartSound = _ttsModel.StartSound;
+            WizardEndSound = _ttsModel.EndSound;
 
             ExecuteNavigate(pageType);
         }
@@ -491,7 +491,7 @@ namespace SpeechToText.ViewModels
             var initialList = new string[] { null };
 
             AvailableStartEndSounds = initialList.Concat(
-                _sttModel.GetAvailableStartEndSounds());
+                _ttsModel.GetAvailableStartEndSounds());
         }
 
         /// <summary>
@@ -527,9 +527,9 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteWizardSaveSoundSettings()
         {
-            _sttModel.StartSound = WizardStartSound;
-            _sttModel.EndSound = WizardEndSound;
-            _sttModel.SoundOn = WizardSoundOn;
+            _ttsModel.StartSound = WizardStartSound;
+            _ttsModel.EndSound = WizardEndSound;
+            _ttsModel.SoundOn = WizardSoundOn;
             OnPropertyChanged(nameof(SoundOn));
 
             //ExecuteNavigateBack();
@@ -542,12 +542,12 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteRecognitionStart()
         {
-            if (!_sttModel.Ready)
+            if (!_ttsModel.Ready)
             {
                 return;
             }
 
-            _sttModel.Start();
+            _ttsModel.Start();
         }
 
         /// <summary>
@@ -557,12 +557,12 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteRecognitionPause()
         {
-            if (!_sttModel.Ready)
+            if (!_ttsModel.Ready)
             {
                 return;
             }
 
-            _sttModel.Pause();
+            _ttsModel.Pause();
         }
 
         /// <summary>
@@ -572,12 +572,12 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteRecognitionStop()
         {
-            if (!_sttModel.Ready)
+            if (!_ttsModel.Ready)
             {
                 return;
             }
 
-            _sttModel.Stop();
+            _ttsModel.Stop();
         }
 
         /// <summary>
@@ -587,12 +587,12 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteClearResult()
         {
-            if (!_sttModel.Ready)
+            if (!_ttsModel.Ready)
             {
                 return;
             }
 
-            _sttModel.Clear();
+            _ttsModel.Clear();
         }
 
         /// <summary>
@@ -617,9 +617,9 @@ namespace SpeechToText.ViewModels
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="eventArgs">Event arguments.</param>
-        private void SttModelOnResultChanged(object sender, EventArgs eventArgs)
+        private void TtsModelOnResultChanged(object sender, EventArgs eventArgs)
         {
-            ResultText = _sttModel.Result;
+            ResultText = _ttsModel.Result;
         }
 
         /// <summary>

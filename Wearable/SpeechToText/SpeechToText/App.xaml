@@ -9,9 +9,9 @@
         <ResourceDictionary>
             <converters:SupportedLanguageToDisplayNameConverter x:Key="LanguageConverter" />
 
-            <converters:RecognitionTypeToDisplayNameConverter x:Key="RecognitionTypeConverter" />
+            <!--<converters:RecognitionTypeToDisplayNameConverter x:Key="RecognitionTypeConverter" />-->
 
-            <converters:SilenceDetectionToDisplayNameConverter x:Key="SilenceDetectionConverter" />
+            <!--<converters:SilenceDetectionToDisplayNameConverter x:Key="SilenceDetectionConverter" />-->
 
             <converters:BoolToStringConverter x:Key="BoolToOnOffConverter">
                 <x:Arguments>

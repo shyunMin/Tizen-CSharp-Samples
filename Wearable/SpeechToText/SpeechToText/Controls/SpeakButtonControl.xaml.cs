@@ -27,7 +27,7 @@ namespace SpeechToText.Controls
     /// and animations.
     /// </summary>
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MicButtonControl : ContentView
+    public partial class SpeakButtonControl : ContentView
     {
         #region fields
 
@@ -60,21 +60,21 @@ namespace SpeechToText.Controls
         /// The property is a flag indicating if button is in recording state.
         /// </summary>
         public static readonly BindableProperty RecordingProperty =
-            BindableProperty.Create("Recording", typeof(bool), typeof(MicButtonControl), false);
+            BindableProperty.Create("Recording", typeof(bool), typeof(SpeakButtonControl), false);
 
         /// <summary>
         /// "TurnOnCommand" bindable property definition.
         /// The command is executed when button is tapped in no-recording state.
         /// </summary>
         public static readonly BindableProperty TurnOnCommandProperty =
-            BindableProperty.Create("TurnOnCommand", typeof(ICommand), typeof(MicButtonControl));
+            BindableProperty.Create("TurnOnCommand", typeof(ICommand), typeof(SpeakButtonControl));
 
         /// <summary>
         /// "TurnOffCommand" bindable property definition.
         /// The command is executed when button is tapped in recording state.
         /// </summary
         public static readonly BindableProperty TurnOffCommandProperty =
-            BindableProperty.Create("TurnOffCommand", typeof(ICommand), typeof(MicButtonControl));
+            BindableProperty.Create("TurnOffCommand", typeof(ICommand), typeof(SpeakButtonControl));
 
         /// <summary>
         /// Flag indicating if button is in recording state.
@@ -110,7 +110,7 @@ namespace SpeechToText.Controls
         /// <summary>
         /// The control constructor.
         /// </summary>
-        public MicButtonControl()
+        public SpeakButtonControl()
         {
             InitializeComponent();
         }

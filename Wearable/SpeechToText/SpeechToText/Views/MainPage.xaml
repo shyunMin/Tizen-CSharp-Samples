@@ -75,8 +75,8 @@
                         <TapGestureRecognizer Command="{Binding ClearResultCommand}" />
                     </Image.GestureRecognizers>
                 </Image>
-                
-                <controls:MicButtonControl Recording="{Binding RecognitionActive}"
+
+                <controls:SpeakButtonControl Recording="{Binding RecognitionActive}"
                                            TurnOnCommand="{Binding RecognitionStartCommand}"
                                            TurnOffCommand="{Binding RecognitionPauseCommand}" />
                 

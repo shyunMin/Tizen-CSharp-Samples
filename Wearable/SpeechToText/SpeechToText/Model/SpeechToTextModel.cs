@@ -23,7 +23,7 @@ namespace SpeechToText.Model
     /// <summary>
     /// The model class handling speech-to-text logic.
     /// </summary>
-    class SpeechToTextModel
+    class TextToSpeechModel
     {
         #region fields
 
@@ -279,7 +279,7 @@ namespace SpeechToText.Model
         /// The model constructor.
         /// </summary>
         /// <param name="state">Persistent storage used to save state.</param>
-        public SpeechToTextModel(IDictionary<string, object> state)
+        public TextToSpeechModel(IDictionary<string, object> state)
         {
             _state = state;
             _sttService = new SpeechToTextApiManager();
