@@ -17,8 +17,6 @@
         <ResourceDictionary>
             <x:Array Type="{x:Type x:String}" x:Key="ListItems">
                 <x:String>switch</x:String>
-                <x:String>start_sound</x:String>
-                <x:String>end_sound</x:String>
             </x:Array>
 
             <views:SoundsSettingsTemplateSelector x:Key="ListTemplateSelector">
@@ -37,24 +35,6 @@
                         </ViewCell>
                     </DataTemplate>
                 </views:SoundsSettingsTemplateSelector.SoundSwitchTemplate>
-                <views:SoundsSettingsTemplateSelector.StartSoundTemplate>
-                    <DataTemplate>
-                        <controls:SubtitleCell Text="Start sound"
-                                               Subtitle="{Binding Source={x:Static Application.Current}, Path=AppViewModel.WizardStartSound, Converter={StaticResource SoundPathToNameConverter}}"
-                                               Command="{Binding Source={x:Static Application.Current}, Path=AppViewModel.NavigateCommand}"
-                                               CommandParameter="{x:Type views:StartSoundListPage}" />
-                    </DataTemplate>
-                </views:SoundsSettingsTemplateSelector.StartSoundTemplate>
-                <views:SoundsSettingsTemplateSelector.EndSoundTemplate>
-                    <DataTemplate>
-
-                        <controls:SubtitleCell Text="End sound"
-                                               Subtitle="{Binding Source={x:Static Application.Current}, Path=AppViewModel.WizardEndSound, Converter={StaticResource SoundPathToNameConverter}}"
-                                               Command="{Binding Source={x:Static Application.Current}, Path=AppViewModel.NavigateCommand}"
-                                               CommandParameter="{x:Type views:EndSoundListPage}" />
-
-                    </DataTemplate>
-                </views:SoundsSettingsTemplateSelector.EndSoundTemplate>
             </views:SoundsSettingsTemplateSelector>
         </ResourceDictionary>
     </w:CirclePage.Resources>

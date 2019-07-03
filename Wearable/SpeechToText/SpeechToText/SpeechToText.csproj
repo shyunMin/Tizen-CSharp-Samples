@@ -12,12 +12,16 @@
     <DebugType>None</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Views\EndSoundListPage.xaml.cs" />
     <Compile Remove="Views\RecognitionTypeSettingsPage.xaml.cs" />
     <Compile Remove="Views\SilenceDetectionSettingsPage.xaml.cs" />
+    <Compile Remove="Views\StartSoundListPage.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="Views\EndSoundListPage.xaml" />
     <EmbeddedResource Remove="Views\RecognitionTypeSettingsPage.xaml" />
     <EmbeddedResource Remove="Views\SilenceDetectionSettingsPage.xaml" />
+    <EmbeddedResource Remove="Views\StartSoundListPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
