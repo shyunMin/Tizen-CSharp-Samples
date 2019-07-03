@@ -7,16 +7,16 @@
         <AbsoluteLayout>
             <Image AbsoluteLayout.LayoutBounds=".5, .5, 134, 134"
                    AbsoluteLayout.LayoutFlags="PositionProportional"
-                   Source="images/mic1_bg.png"
+                   Source="images/sounds_bg.png"
                    IsVisible="True"
                    x:Name="DefaultBackgroundImage" />
             <Image AbsoluteLayout.LayoutBounds=".5, .5, 101, 101"
                    AbsoluteLayout.LayoutFlags="PositionProportional"
-                   Source="images/mic1.png"
+                   Source="images/sounds.png"
                    x:Name="DefaultForegroundImage" />
             <Image AbsoluteLayout.LayoutBounds=".5, .5, 101, 101"
                    AbsoluteLayout.LayoutFlags="PositionProportional"
-                   Source="images/mic2.png"
+                   Source="images/sounds_pressed.png"
                    x:Name="PressedForegroundImage"
                    Opacity="0" />
             <BoxView AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
