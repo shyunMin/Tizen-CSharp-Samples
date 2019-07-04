@@ -63,6 +63,8 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private string _resultText;
 
+        private string _textToRead;
+
         /// <summary>
         /// Private backing field for ServiceError property.
         /// </summary>
@@ -188,6 +190,21 @@ namespace SpeechToText.ViewModels
         {
             get => _resultText;
             private set => SetProperty(ref _resultText, value);
+        }
+
+        public string TextToRead
+        {
+            get => _textToRead;
+            private set
+            {
+                Console.WriteLine($"---------- Set TextToRead = {value}");
+                //if (_textToRead != value)
+                //{
+                //    //SetProperty(ref _textToRead, value);
+                //}
+                _textToRead = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -548,6 +565,8 @@ namespace SpeechToText.ViewModels
             }
 
             _ttsModel.Start();
+
+            Console.WriteLine($"+++++++++++++ ExecuteRecognitionStart Text = {TextToRead}");
         }
 
         /// <summary>

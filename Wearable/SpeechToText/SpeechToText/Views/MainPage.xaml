@@ -17,7 +17,7 @@
             <converters:BoolToStringConverter x:Key="RecognitionStateToTipTextConverter">
                 <x:Arguments>
                     <x:String>Tap to pause</x:String>
-                    <x:String>Tap on mic to speak</x:String>
+                    <x:String>Tap to read</x:String>
                 </x:Arguments>
             </converters:BoolToStringConverter>
 
@@ -54,6 +54,13 @@
                            TextColor="{StaticResource TextColor}" />
                 </StackLayout>
             </w:CircleScrollView>
+
+            <Entry x:Name="TextEntry"
+                   HorizontalOptions="CenterAndExpand"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   Placeholder="Input Text" 
+                   Text="{Binding TextToRead, Mode=TwoWay}"/>
 
             <Label FontSize="Micro"
                    Margin="0, 20, 0, -10"
