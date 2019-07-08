@@ -147,11 +147,6 @@ namespace SpeechToText.Model
         #region properties
 
         /// <summary>
-        /// Event to be invoked when the recognition is done (partial or final).
-        /// </summary>
-        public event EventHandler<IRecognitionResultEventArgs> RecognitionResult;
-
-        /// <summary>
         /// Event invoked when recognition state was changed (on/off).
         /// </summary>
         public event EventHandler<EventArgs> RecognitionActiveStateChanged;
@@ -200,32 +195,6 @@ namespace SpeechToText.Model
         /// followed by ISO 639-1 for the two-letter language code.
         /// </summary>
         public string DefaultLanguage => Ready ? _client.DefaultLanguage : null;
-
-        /// <summary>
-        /// A collection of available recognition types.
-        /// </summary>
-        public IEnumerable<RecognitionType> SupportedRecognitionTypes
-        {
-            get
-            {
-                if (!Ready)
-                {
-                    return Enumerable.Empty<RecognitionType>();
-                }
-
-                var result = new List<RecognitionType>();
-
-                foreach (Stt.RecognitionType type in Enum.GetValues(typeof(Stt.RecognitionType)))
-                {
-                    if (_client.IsRecognitionTypeSupported(type))
-                    {
-                        result.Add(type.ToPortableRecognitionType());
-                    }
-                }
-
-                return result;
-            }
-        }
 
         /// <summary>
         /// Flag indicating if recognition is active.
@@ -338,11 +307,6 @@ namespace SpeechToText.Model
 
                 return;
             }
-
-            RecognitionResult?.Invoke(this,
-                new ServiceRecognitionResultEventArgs(
-                    recognitionResultEventArgs.Result == Stt.ResultEvent.FinalResult,
-                    String.Join(String.Empty, recognitionResultEventArgs.Data)));
         }
 
         /// <summary>
@@ -408,102 +372,6 @@ namespace SpeechToText.Model
             _client.Prepare();
             await _initTask.Task;
             _initTask = null;
-        }
-
-        /// <summary>
-        /// Sets the silence detection.
-        /// </summary>
-        /// <param name="mode">Mode to set (Auto, True, False).</param>
-        public void SetSilenceDetection(SilenceDetection mode)
-        {
-            _client.SetSilenceDetection(mode.ToNativeSilenceDetection());
-        }
-
-        /// <summary>
-        /// Sets the sound to start recording. Sound file type should be .wav type.
-        /// If null value is specified, the sound is unset.
-        /// </summary>
-        /// <param name="filePath">File path to set.</param>
-        public void SetStartSound(string filePath)
-        {
-            try
-            {
-                if (filePath == null)
-                {
-                    _client.UnsetStartSound();
-                }
-                else
-                {
-                    _client.SetStartSound(filePath);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("STT", "Unable to change start sound: " + e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Sets the sound to stop recording. Sound file type should be .wav type.
-        /// If null value is specified, the sound is unset.
-        /// </summary>
-        /// <param name="filePath">File path to set.</param>
-        public void SetStopSound(string filePath)
-        {
-            try
-            {
-                if (filePath == null)
-                {
-                    _client.UnsetStopSound();
-                }
-                else
-                {
-                    _client.SetStopSound(filePath);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("STT", "Unable to change stop sound: " + e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Returns a collection of sound files (paths) which can be used
-        /// as start and end sounds for STT client.
-        /// </summary>
-        /// <returns>A collection of sounds (paths).</returns>
-        public IEnumerable<string> GetAvailableStartEndSounds()
-        {
-            var result = new List<string>();
-            try
-            {
-                var command = new MediaContent.MediaInfoCommand(_mediaDatabase);
-                var reader = command.SelectMedia(new MediaContent.SelectArguments()
-                {
-                    FilterExpression = string.Format(
-                        "{0}='audio/wav' OR {0}='audio/x-wav'",
-                        MediaContent.MediaInfoColumns.MimeType),
-                    SortOrder = MediaContent.MediaInfoColumns.DisplayName + " ASC"
-                });
-
-                while (reader.Read())
-                {
-                    var info = reader.Current as MediaContent.AudioInfo;
-
-                    if (info == null)
-                    {
-                        continue;
-                    }
-
-                    result.Add(info.Path);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Debug("STT", e.Message + " " + e.GetType());
-            }
-
-            return result;
         }
 
         /// <summary>

@@ -33,16 +33,6 @@ namespace SpeechToText.Model
         private static readonly string STATE_SETTINGS_LANGUAGE_KEY = "language";
 
         /// <summary>
-        /// Key used to store STT language in application state.
-        /// </summary>
-        private static readonly string STATE_SETTINGS_RECOGNITION_TYPE_KEY = "recognition_type";
-
-        /// <summary>
-        /// Key used to store STT silence detection mode in application state.
-        /// </summary>
-        private static readonly string STATE_SETTINGS_SILENCE_DETECTION_KEY = "silence_detection";
-
-        /// <summary>
         /// Key used to store sounds status (on/off) in application state.
         /// </summary>
         private static readonly string STATE_SETTINGS_SOUND_ON_KEY = "sound_on";
@@ -51,16 +41,6 @@ namespace SpeechToText.Model
         /// Private backing field for Language property.
         /// </summary>
         private string _language;
-
-        /// <summary>
-        /// Private backing field for RecognitionType property.
-        /// </summary>
-        private RecognitionType _recognitionType;
-
-        /// <summary>
-        /// Private backing field for SilenceDetection property.
-        /// </summary>
-        private SilenceDetection _silenceDetection;
 
         /// <summary>
         /// Dictionary holding model state (persistent).
@@ -76,15 +56,6 @@ namespace SpeechToText.Model
         /// Private backing field for SoundOn property.
         /// </summary>
         private bool _soundOn;
-
-
-        /// <summary>
-        /// A list with service's recognition results.
-        /// The last item is updated when the service delivers new partial result.
-        /// If service sends final result, the last item is "closed" and new item is added.
-        /// The model's final result is a concatenation of all list items.
-        /// </summary>
-        private List<string> _results = new List<string>();
 
         /// <summary>
         /// Flag indicating if recognition was stopped.
@@ -145,41 +116,6 @@ namespace SpeechToText.Model
         }
 
         /// <summary>
-        /// A collection of available recognition types.
-        /// </summary>
-        public IEnumerable<RecognitionType> SupportedRecognitionTypes =>
-            _sttService.SupportedRecognitionTypes;
-
-        /// <summary>
-        /// Current STT model recognition type.
-        /// </summary>
-        public RecognitionType RecognitionType
-        {
-            get => _recognitionType;
-            set
-            {
-                _state[STATE_SETTINGS_RECOGNITION_TYPE_KEY] = value;
-                _recognitionType = value;
-                Application.Current.SavePropertiesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Current STT model silence detection mode.
-        /// </summary>
-        public SilenceDetection SilenceDetection
-        {
-            get => _silenceDetection;
-            set
-            {
-                _state[STATE_SETTINGS_SILENCE_DETECTION_KEY] = value;
-                _silenceDetection = value;
-                _sttService.SetSilenceDetection(value);
-                Application.Current.SavePropertiesAsync();
-            }
-        }
-
-        /// <summary>
         /// Flag indicating if model sounds are on.
         /// </summary>
         public bool SoundOn
@@ -194,11 +130,6 @@ namespace SpeechToText.Model
                 Application.Current.SavePropertiesAsync();
             }
         }
-
-        /// <summary>
-        /// The recognition result (string).
-        /// </summary>
-        public string Result => String.Join(" ", _results).Trim();
 
         /// <summary>
         /// Flag indicating if recognition is active.
@@ -217,7 +148,7 @@ namespace SpeechToText.Model
         {
             _state = state;
             _sttService = new SpeechToTextApiManager();
-            _sttService.RecognitionResult += SttServiceOnRecognitionResult;
+            //_sttService.RecognitionResult += SttServiceOnRecognitionResult;
             _sttService.RecognitionActiveStateChanged += SttServiceOnRecognitionActiveStateChanged;
             _sttService.RecognitionError += SttServiceOnRecognitionError;
             _sttService.ServiceError += SttServiceOnServiceError;
@@ -273,64 +204,8 @@ namespace SpeechToText.Model
             Language = _state.ContainsKey(STATE_SETTINGS_LANGUAGE_KEY) ?
                 (string)_state[STATE_SETTINGS_LANGUAGE_KEY] : _sttService.DefaultLanguage;
 
-            //RecognitionType = _state.ContainsKey(STATE_SETTINGS_RECOGNITION_TYPE_KEY)
-            //    ? (RecognitionType)_state[STATE_SETTINGS_RECOGNITION_TYPE_KEY]
-            //    : _sttService.SupportedRecognitionTypes.FirstOrDefault();
-
-            //SilenceDetection = _state.ContainsKey(STATE_SETTINGS_SILENCE_DETECTION_KEY)
-            //    ? (SilenceDetection)_state[STATE_SETTINGS_SILENCE_DETECTION_KEY]
-            //    : SilenceDetection.Auto;
-
-            //StartSound = _state.ContainsKey(STATE_SETTINGS_START_SOUND_KEY)
-            //    ? (string)_state[STATE_SETTINGS_START_SOUND_KEY]
-            //    : null;
-
-            //EndSound = _state.ContainsKey(STATE_SETTINGS_END_SOUND_KEY)
-            //    ? (string)_state[STATE_SETTINGS_END_SOUND_KEY]
-            //    : null;
-
             SoundOn = _state.ContainsKey(STATE_SETTINGS_SOUND_ON_KEY) &&
                 (bool)_state[STATE_SETTINGS_SOUND_ON_KEY];
-        }
-
-        /// <summary>
-        /// Returns a collection of sound files (paths) which can be used
-        /// as start and end sounds for STT client.
-        /// </summary>
-        /// <returns>A collection of sounds (paths).</returns>
-        public IEnumerable<string> GetAvailableStartEndSounds()
-        {
-            return _sttService.GetAvailableStartEndSounds();
-        }
-
-        /// <summary>
-        /// Handles recognition result event from the service.
-        /// Updates recognition result list.
-        /// </summary>
-        /// <param name="sender">Event sender (service).</param>
-        /// <param name="recognitionResultEventArgs">Event arguments.</param>
-        private void SttServiceOnRecognitionResult(object sender, IRecognitionResultEventArgs recognitionResultEventArgs)
-        {
-            if (_results.Count == 0)
-            {
-                _results.Add(recognitionResultEventArgs.Result.Trim());
-            }
-            else
-            {
-                _results[_results.Count - 1] = recognitionResultEventArgs.Result.Trim();
-            }
-
-            if (recognitionResultEventArgs.IsFinal)
-            {
-                if (_results[_results.Count - 1].Length > 0)
-                {
-                    _results[_results.Count - 1] += ".";
-                }
-
-                _results.Add("");
-            }
-
-            ResultChanged?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -355,7 +230,7 @@ namespace SpeechToText.Model
                 _recognitionStopped = false;
             }
 
-            _sttService.Start(Language, RecognitionType);
+            _sttService.Start(Language, RecognitionType.Free);
         }
 
         /// <summary>
