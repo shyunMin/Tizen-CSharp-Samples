@@ -48,16 +48,6 @@ namespace SpeechToText.Model
         private static readonly string STATE_SETTINGS_SOUND_ON_KEY = "sound_on";
 
         /// <summary>
-        /// Key used to store start sound path for STT client in application state.
-        /// </summary>
-        private static readonly string STATE_SETTINGS_START_SOUND_KEY = "start_sound";
-
-        /// <summary>
-        /// Key used to store end sound path for STT client in application state.
-        /// </summary>
-        private static readonly string STATE_SETTINGS_END_SOUND_KEY = "end_sound";
-
-        /// <summary>
         /// Private backing field for Language property.
         /// </summary>
         private string _language;
@@ -87,15 +77,6 @@ namespace SpeechToText.Model
         /// </summary>
         private bool _soundOn;
 
-        /// <summary>
-        /// Private backing field for StartSound property.
-        /// </summary>
-        private string _startSound;
-
-        /// <summary>
-        /// Private backing field for EndSound property.
-        /// </summary>
-        private string _endSound;
 
         /// <summary>
         /// A list with service's recognition results.
@@ -208,55 +189,8 @@ namespace SpeechToText.Model
             {
                 _soundOn = value;
 
-                if (_soundOn)
-                {
-                    if (_startSound != null)
-                    {
-                        _sttService.SetStartSound(_startSound);
-                    }
-
-                    if (_endSound != null)
-                    {
-                        _sttService.SetStopSound(_endSound);
-                    }
-                }
-                else
-                {
-                    _sttService.SetStartSound(null);
-                    _sttService.SetStopSound(null);
-                }
 
                 _state[STATE_SETTINGS_SOUND_ON_KEY] = _soundOn;
-                Application.Current.SavePropertiesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Sound to start recording.
-        /// </summary>
-        public string StartSound
-        {
-            get => _startSound;
-            set
-            {
-                _startSound = value;
-                _sttService.SetStartSound(SoundOn ? _startSound : null);
-                _state[STATE_SETTINGS_START_SOUND_KEY] = _startSound;
-                Application.Current.SavePropertiesAsync();
-            }
-        }
-
-        /// <summary>
-        /// Sound to end recording.
-        /// </summary>
-        public string EndSound
-        {
-            get => _endSound;
-            set
-            {
-                _endSound = value;
-                _sttService.SetStopSound(SoundOn ? _endSound : null);
-                _state[STATE_SETTINGS_END_SOUND_KEY] = _endSound;
                 Application.Current.SavePropertiesAsync();
             }
         }
@@ -339,21 +273,21 @@ namespace SpeechToText.Model
             Language = _state.ContainsKey(STATE_SETTINGS_LANGUAGE_KEY) ?
                 (string)_state[STATE_SETTINGS_LANGUAGE_KEY] : _sttService.DefaultLanguage;
 
-            RecognitionType = _state.ContainsKey(STATE_SETTINGS_RECOGNITION_TYPE_KEY)
-                ? (RecognitionType)_state[STATE_SETTINGS_RECOGNITION_TYPE_KEY]
-                : _sttService.SupportedRecognitionTypes.FirstOrDefault();
+            //RecognitionType = _state.ContainsKey(STATE_SETTINGS_RECOGNITION_TYPE_KEY)
+            //    ? (RecognitionType)_state[STATE_SETTINGS_RECOGNITION_TYPE_KEY]
+            //    : _sttService.SupportedRecognitionTypes.FirstOrDefault();
 
-            SilenceDetection = _state.ContainsKey(STATE_SETTINGS_SILENCE_DETECTION_KEY)
-                ? (SilenceDetection)_state[STATE_SETTINGS_SILENCE_DETECTION_KEY]
-                : SilenceDetection.Auto;
+            //SilenceDetection = _state.ContainsKey(STATE_SETTINGS_SILENCE_DETECTION_KEY)
+            //    ? (SilenceDetection)_state[STATE_SETTINGS_SILENCE_DETECTION_KEY]
+            //    : SilenceDetection.Auto;
 
-            StartSound = _state.ContainsKey(STATE_SETTINGS_START_SOUND_KEY)
-                ? (string)_state[STATE_SETTINGS_START_SOUND_KEY]
-                : null;
+            //StartSound = _state.ContainsKey(STATE_SETTINGS_START_SOUND_KEY)
+            //    ? (string)_state[STATE_SETTINGS_START_SOUND_KEY]
+            //    : null;
 
-            EndSound = _state.ContainsKey(STATE_SETTINGS_END_SOUND_KEY)
-                ? (string)_state[STATE_SETTINGS_END_SOUND_KEY]
-                : null;
+            //EndSound = _state.ContainsKey(STATE_SETTINGS_END_SOUND_KEY)
+            //    ? (string)_state[STATE_SETTINGS_END_SOUND_KEY]
+            //    : null;
 
             SoundOn = _state.ContainsKey(STATE_SETTINGS_SOUND_ON_KEY) &&
                 (bool)_state[STATE_SETTINGS_SOUND_ON_KEY];
@@ -448,7 +382,7 @@ namespace SpeechToText.Model
         /// </summary>
         public void Clear()
         {
-            _results.Clear();
+            //_results.Clear();
             ResultChanged?.Invoke(this, new EventArgs());
         }
 

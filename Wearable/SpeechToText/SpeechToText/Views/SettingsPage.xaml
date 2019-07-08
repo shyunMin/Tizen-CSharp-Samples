@@ -42,8 +42,8 @@
                         </x:Arguments>
                     </views:SettingsItemsGroup>
                 </x:Array>
-
             </w:CircleListView.ItemsSource>
+            
             <w:CircleListView.ItemTemplate>
                 <DataTemplate>
                     <controls:IconSubtitleCellControl Text="{Binding Title}"

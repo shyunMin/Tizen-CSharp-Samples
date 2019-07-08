@@ -45,23 +45,23 @@
                                 x:Name="ResultScrollView"
                                 HeightRequest="300">
                 <!--Label must be in StackLayout to properly calculate the height for ScrollView-->
-                <StackLayout>
-                    <Label Text="{Binding ResultText}"
+            <StackLayout>
+                    <!--<Label Text="111"
                            FontSize="Micro"
                            HorizontalTextAlignment="Center"
                            LineBreakMode="WordWrap"
                            WidthRequest="256"
-                           TextColor="{StaticResource TextColor}" />
+                           TextColor="{StaticResource TextColor}" />-->
+                    <Entry x:Name="TextEntry"
+                           HorizontalOptions="CenterAndExpand"
+                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           TextColor="White"
+                           Placeholder="Input Text" 
+                           Text="{Binding TextToRead, Mode=TwoWay}"/>
                 </StackLayout>
             </w:CircleScrollView>
-
-            <Entry x:Name="TextEntry"
-                   HorizontalOptions="CenterAndExpand"
-                   HorizontalTextAlignment="Center"
-                   TextColor="White"
-                   Placeholder="Input Text" 
-                   Text="{Binding TextToRead, Mode=TwoWay}"/>
-
+            
             <Label FontSize="Micro"
                    Margin="0, 20, 0, -10"
                    HorizontalOptions="CenterAndExpand"

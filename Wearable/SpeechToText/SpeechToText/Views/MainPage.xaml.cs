@@ -53,24 +53,6 @@ namespace SpeechToText.Views
             {
                 return;
             }
-
-            context.PropertyChanged += ContextOnPropertyChanged;
-
-        }
-
-        /// <summary>
-        /// Handles property change of the binding context.
-        ///
-        /// If result changes, the scroll-view will scroll to the end.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="propertyChangedEventArgs">Event arguments.</param>
-        private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == nameof(MainViewModel.ResultText))
-            {
-                ResultScrollView.ScrollToAsync(0, ResultScrollView.ContentSize.Height, true);
-            }
         }
     }
 }

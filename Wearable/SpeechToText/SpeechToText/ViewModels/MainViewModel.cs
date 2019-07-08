@@ -37,18 +37,6 @@ namespace SpeechToText.ViewModels
         private bool _wizardSoundOn;
 
         /// <summary>
-        /// Private backing field for WizardStartSound property.
-        /// Contains temporary value for start sound used in the sounds wizard.
-        /// </summary>
-        private string _wizardStartSound;
-
-        /// <summary>
-        /// Private backing field for WizardEndSound property.
-        /// Contains temporary value for end sound used in the sounds wizard.
-        /// </summary>
-        private string _wizardEndSound;
-
-        /// <summary>
         /// An instance of the STT model.
         /// </summary>
         private TextToSpeechModel _ttsModel;
@@ -56,12 +44,8 @@ namespace SpeechToText.ViewModels
         /// <summary>
         /// Private backing field for AvailableStartEndSounds property.
         /// </summary>
-        private IEnumerable<string> _availableStartEndSounds;
+        //private IEnumerable<string> _availableStartEndSounds;
 
-        /// <summary>
-        /// Private backing field for ResultText property.
-        /// </summary>
-        private string _resultText;
 
         private string _textToRead;
 
@@ -113,21 +97,6 @@ namespace SpeechToText.ViewModels
         /// Command which initializes sounds settings wizard (initial value, sounds list data).
         /// </summary>
         public ICommand InitSoundsWizardCommand { get; private set; }
-
-        /// <summary>
-        /// Command which updates available start/end sounds list.
-        /// </summary>
-        public ICommand UpdateAvailableStartEndSoundsCommand { get; private set; }
-
-        /// <summary>
-        /// Command which updates start sound value (sounds wizard).
-        /// </summary>
-        public ICommand WizardUpdateStartSoundCommand { get; private set; }
-
-        /// <summary>
-        /// Command which updates end sound value (sounds wizard).
-        /// </summary>
-        public ICommand WizardUpdateEndSoundCommand { get; private set; }
 
         /// <summary>
         /// Command which saves sound settings.
@@ -183,27 +152,16 @@ namespace SpeechToText.ViewModels
         /// </summary>
         public ICommand PrivilegeDeniedConfirmedCommand { get; set; }
 
-        /// <summary>
-        /// Recognition result text.
-        /// </summary>
-        public string ResultText
-        {
-            get => _resultText;
-            private set => SetProperty(ref _resultText, value);
-        }
-
         public string TextToRead
         {
             get => _textToRead;
-            private set
+            set
             {
-                Console.WriteLine($"---------- Set TextToRead = {value}");
-                //if (_textToRead != value)
-                //{
-                //    //SetProperty(ref _textToRead, value);
-                //}
-                _textToRead = value;
-                OnPropertyChanged();
+                if (_textToRead != value)
+                {
+                    _textToRead = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -266,16 +224,6 @@ namespace SpeechToText.ViewModels
         }
 
         /// <summary>
-        /// A collection of sound files (paths) which can be used
-        /// as start and end sounds for STT client.
-        /// </summary>
-        public IEnumerable<string> AvailableStartEndSounds
-        {
-            get { return _availableStartEndSounds; }
-            private set { SetProperty(ref _availableStartEndSounds, value); }
-        }
-
-        /// <summary>
         /// Flag indicating if STT client sounds (start, end) are turn on (wizard value).
         /// </summary>
         public bool SoundOn => _ttsModel.SoundOn;
@@ -289,23 +237,23 @@ namespace SpeechToText.ViewModels
             set => SetProperty(ref _wizardSoundOn, value);
         }
 
-        /// <summary>
-        /// Wizard value for the start sound.
-        /// </summary>
-        public string WizardStartSound
-        {
-            get => _wizardStartSound;
-            set => SetProperty(ref _wizardStartSound, value);
-        }
+        ///// <summary>
+        ///// Wizard value for the start sound.
+        ///// </summary>
+        //public string WizardStartSound
+        //{
+        //    get => _wizardStartSound;
+        //    set => SetProperty(ref _wizardStartSound, value);
+        //}
 
-        /// <summary>
-        /// Wizard value for the end sound.
-        /// </summary>
-        public string WizardEndSound
-        {
-            get => _wizardEndSound;
-            set => SetProperty(ref _wizardEndSound, value);
-        }
+        ///// <summary>
+        ///// Wizard value for the end sound.
+        ///// </summary>
+        //public string WizardEndSound
+        //{
+        //    get => _wizardEndSound;
+        //    set => SetProperty(ref _wizardEndSound, value);
+        //}
 
         /// <summary>
         /// Service error value.
@@ -330,7 +278,6 @@ namespace SpeechToText.ViewModels
             try
             {
                 _ttsModel = new TextToSpeechModel(Application.Current.Properties);
-                _ttsModel.ResultChanged += TtsModelOnResultChanged;
                 _ttsModel.RecognitionActiveStateChanged += SttModelOnRecognitionActiveStateChanged;
                 _ttsModel.RecognitionError += SttModelOnRecognitionError;
                 _ttsModel.ServiceError += SttModelOnServiceError;
@@ -378,9 +325,6 @@ namespace SpeechToText.ViewModels
             ChangeRecognitionTypeCommand = new Command<RecognitionType>(ExecuteChangeRecognitionType);
             ChangeSilenceDetectionCommand = new Command<SilenceDetection>(ExecuteChangeSilenceDetection);
             InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
-            UpdateAvailableStartEndSoundsCommand = new Command(ExecuteUpdateAvailableStartEndSounds);
-            WizardUpdateStartSoundCommand = new Command<string>(ExecuteWizardUpdateStartSound);
-            WizardUpdateEndSoundCommand = new Command<string>(ExecuteWizardUpdateEndSound);
             WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
             RecognitionStartCommand = new Command(ExecuteRecognitionStart);
             RecognitionPauseCommand = new Command(ExecuteRecognitionPause);
@@ -491,50 +435,10 @@ namespace SpeechToText.ViewModels
         private void ExecuteInitSoundsWizard(Type pageType)
         {
             WizardSoundOn = SoundOn;
-            WizardStartSound = _ttsModel.StartSound;
-            WizardEndSound = _ttsModel.EndSound;
+            //WizardStartSound = _ttsModel.StartSound;
+            //WizardEndSound = _ttsModel.EndSound;
 
             ExecuteNavigate(pageType);
-        }
-
-        /// <summary>
-        /// Handles execution of update available start/end sounds command.
-        ///
-        /// Triggers updating of available sounds collection.
-        /// </summary>
-        private void ExecuteUpdateAvailableStartEndSounds()
-        {
-            // initial list contains empty element
-            var initialList = new string[] { null };
-
-            AvailableStartEndSounds = initialList.Concat(
-                _ttsModel.GetAvailableStartEndSounds());
-        }
-
-        /// <summary>
-        /// Handles execution of wizard update start sound command.
-        ///
-        /// Updates wizard value for start sound.
-        /// </summary>
-        /// <param name="value">Value to set.</param>
-        private void ExecuteWizardUpdateStartSound(string value)
-        {
-            WizardStartSound = value;
-
-            ExecuteNavigateBack();
-        }
-
-        /// <summary>
-        /// Handles execution of wizard update end sound command.
-        ///
-        /// Updates wizard value for end sound.
-        /// </summary>
-        /// <param name="value">Value to set.</param>
-        private void ExecuteWizardUpdateEndSound(string value)
-        {
-            WizardEndSound = value;
-
-            ExecuteNavigateBack();
         }
 
         /// <summary>
@@ -544,8 +448,6 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteWizardSaveSoundSettings()
         {
-            _ttsModel.StartSound = WizardStartSound;
-            _ttsModel.EndSound = WizardEndSound;
             _ttsModel.SoundOn = WizardSoundOn;
             OnPropertyChanged(nameof(SoundOn));
 
@@ -611,7 +513,9 @@ namespace SpeechToText.ViewModels
                 return;
             }
 
-            _ttsModel.Clear();
+            TextToRead = "";
+
+            //_ttsModel.Clear();
         }
 
         /// <summary>
@@ -628,17 +532,6 @@ namespace SpeechToText.ViewModels
             {
                 global::Tizen.Log.Error("STT", "Unable to close the application");
             }
-        }
-
-        /// <summary>
-        /// Handles recognition result change event from the model.
-        /// Updates "ResultText" property.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="eventArgs">Event arguments.</param>
-        private void TtsModelOnResultChanged(object sender, EventArgs eventArgs)
-        {
-            ResultText = _ttsModel.Result;
         }
 
         /// <summary>

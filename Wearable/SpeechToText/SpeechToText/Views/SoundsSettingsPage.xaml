@@ -9,10 +9,6 @@
              NavigationPage.HasNavigationBar="False"
              RotaryFocusObject="{x:Reference SettingsList}">
 
-    <w:CirclePage.Behaviors>
-        <behaviors:PageCommandsBehavior AppearingCommand="{Binding Source={x:Static Application.Current}, Path=AppViewModel.UpdateAvailableStartEndSoundsCommand}" />
-    </w:CirclePage.Behaviors>
-
     <w:CirclePage.Resources>
         <ResourceDictionary>
             <x:Array Type="{x:Type x:String}" x:Key="ListItems">
