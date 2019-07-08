@@ -44,20 +44,16 @@
             <w:CircleScrollView HorizontalOptions="CenterAndExpand"
                                 x:Name="ResultScrollView"
                                 HeightRequest="300">
-                <!--Label must be in StackLayout to properly calculate the height for ScrollView-->
-            <StackLayout>
-                    <!--<Label Text="111"
-                           FontSize="Micro"
-                           HorizontalTextAlignment="Center"
-                           LineBreakMode="WordWrap"
-                           WidthRequest="256"
-                           TextColor="{StaticResource TextColor}" />-->
-                    <Entry x:Name="TextEntry"
+                <StackLayout>
+
+                    <Editor x:Name="TextEntry"
                            HorizontalOptions="CenterAndExpand"
-                           HorizontalTextAlignment="Center"
-                           VerticalOptions="Center"
+                           
+                           VerticalOptions="EndAndExpand"
                            TextColor="White"
                            Placeholder="Input Text" 
+                           WidthRequest="250"
+                           HeightRequest="100"
                            Text="{Binding TextToRead, Mode=TwoWay}"/>
                 </StackLayout>
             </w:CircleScrollView>

@@ -191,37 +191,37 @@ namespace SpeechToText.ViewModels
             }
         }
 
-        /// <summary>
-        /// A collection of available recognition types.
-        /// </summary>
-        public IEnumerable<RecognitionType> SupportedRecognitionTypes =>
-            _ttsModel.SupportedRecognitionTypes;
+        ///// <summary>
+        ///// A collection of available recognition types.
+        ///// </summary>
+        //public IEnumerable<RecognitionType> SupportedRecognitionTypes =>
+        //    _ttsModel.SupportedRecognitionTypes;
 
-        /// <summary>
-        /// Current STT client recognition type.
-        /// </summary>
-        public RecognitionType RecognitionType
-        {
-            get => _ttsModel.RecognitionType;
-            private set
-            {
-                _ttsModel.RecognitionType = value;
-                OnPropertyChanged();
-            }
-        }
+        ///// <summary>
+        ///// Current STT client recognition type.
+        ///// </summary>
+        //public RecognitionType RecognitionType
+        //{
+        //    get => _ttsModel.RecognitionType;
+        //    private set
+        //    {
+        //        _ttsModel.RecognitionType = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        /// <summary>
-        /// Current STT client silence detection mode.
-        /// </summary>
-        public SilenceDetection SilenceDetection
-        {
-            get => _ttsModel.SilenceDetection;
-            private set
-            {
-                _ttsModel.SilenceDetection = value;
-                OnPropertyChanged();
-            }
-        }
+        ///// <summary>
+        ///// Current STT client silence detection mode.
+        ///// </summary>
+        //public SilenceDetection SilenceDetection
+        //{
+        //    get => _ttsModel.SilenceDetection;
+        //    private set
+        //    {
+        //        _ttsModel.SilenceDetection = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         /// <summary>
         /// Flag indicating if STT client sounds (start, end) are turn on (wizard value).
@@ -322,8 +322,8 @@ namespace SpeechToText.ViewModels
             NavigateBackCommand = new Command(ExecuteNavigateBack);
             NavigateToSettingsCommand = new Command<Type>(ExecuteNavigateToSettings);
             ChangeLanguageCommand = new Command<string>(ExecuteChangeLanguage);
-            ChangeRecognitionTypeCommand = new Command<RecognitionType>(ExecuteChangeRecognitionType);
-            ChangeSilenceDetectionCommand = new Command<SilenceDetection>(ExecuteChangeSilenceDetection);
+            //ChangeRecognitionTypeCommand = new Command<RecognitionType>(ExecuteChangeRecognitionType);
+            //ChangeSilenceDetectionCommand = new Command<SilenceDetection>(ExecuteChangeSilenceDetection);
             InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
             WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
             RecognitionStartCommand = new Command(ExecuteRecognitionStart);
@@ -399,31 +399,31 @@ namespace SpeechToText.ViewModels
             ExecuteNavigateBack();
         }
 
-        /// <summary>
-        /// Handles execution of change recognition type command.
-        ///
-        /// Updates current STT client recognition type.
-        /// </summary>
-        /// <param name="type">Recognition type to set.</param>
-        private void ExecuteChangeRecognitionType(RecognitionType type)
-        {
-            RecognitionType = type;
+        ///// <summary>
+        ///// Handles execution of change recognition type command.
+        /////
+        ///// Updates current STT client recognition type.
+        ///// </summary>
+        ///// <param name="type">Recognition type to set.</param>
+        //private void ExecuteChangeRecognitionType(RecognitionType type)
+        //{
+        //    RecognitionType = type;
 
-            ExecuteNavigateBack();
-        }
+        //    ExecuteNavigateBack();
+        //}
 
-        /// <summary>
-        /// Handles execution of change silence detection command.
-        ///
-        /// Updates STT client silence detection value.
-        /// </summary>
-        /// <param name="value">Silence detection value to set.</param>
-        private void ExecuteChangeSilenceDetection(SilenceDetection value)
-        {
-            SilenceDetection = value;
+        ///// <summary>
+        ///// Handles execution of change silence detection command.
+        /////
+        ///// Updates STT client silence detection value.
+        ///// </summary>
+        ///// <param name="value">Silence detection value to set.</param>
+        //private void ExecuteChangeSilenceDetection(SilenceDetection value)
+        //{
+        //    SilenceDetection = value;
 
-            ExecuteNavigateBack();
-        }
+        //    ExecuteNavigateBack();
+        //}
 
         /// <summary>
         /// Handles execution of init sounds wizard command.
