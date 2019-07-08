@@ -191,38 +191,6 @@ namespace SpeechToText.ViewModels
             }
         }
 
-        ///// <summary>
-        ///// A collection of available recognition types.
-        ///// </summary>
-        //public IEnumerable<RecognitionType> SupportedRecognitionTypes =>
-        //    _ttsModel.SupportedRecognitionTypes;
-
-        ///// <summary>
-        ///// Current STT client recognition type.
-        ///// </summary>
-        //public RecognitionType RecognitionType
-        //{
-        //    get => _ttsModel.RecognitionType;
-        //    private set
-        //    {
-        //        _ttsModel.RecognitionType = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Current STT client silence detection mode.
-        ///// </summary>
-        //public SilenceDetection SilenceDetection
-        //{
-        //    get => _ttsModel.SilenceDetection;
-        //    private set
-        //    {
-        //        _ttsModel.SilenceDetection = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
         /// <summary>
         /// Flag indicating if STT client sounds (start, end) are turn on (wizard value).
         /// </summary>
@@ -236,24 +204,6 @@ namespace SpeechToText.ViewModels
             get => _wizardSoundOn;
             set => SetProperty(ref _wizardSoundOn, value);
         }
-
-        ///// <summary>
-        ///// Wizard value for the start sound.
-        ///// </summary>
-        //public string WizardStartSound
-        //{
-        //    get => _wizardStartSound;
-        //    set => SetProperty(ref _wizardStartSound, value);
-        //}
-
-        ///// <summary>
-        ///// Wizard value for the end sound.
-        ///// </summary>
-        //public string WizardEndSound
-        //{
-        //    get => _wizardEndSound;
-        //    set => SetProperty(ref _wizardEndSound, value);
-        //}
 
         /// <summary>
         /// Service error value.
@@ -322,8 +272,6 @@ namespace SpeechToText.ViewModels
             NavigateBackCommand = new Command(ExecuteNavigateBack);
             NavigateToSettingsCommand = new Command<Type>(ExecuteNavigateToSettings);
             ChangeLanguageCommand = new Command<string>(ExecuteChangeLanguage);
-            //ChangeRecognitionTypeCommand = new Command<RecognitionType>(ExecuteChangeRecognitionType);
-            //ChangeSilenceDetectionCommand = new Command<SilenceDetection>(ExecuteChangeSilenceDetection);
             InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
             WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
             RecognitionStartCommand = new Command(ExecuteRecognitionStart);
@@ -435,8 +383,6 @@ namespace SpeechToText.ViewModels
         private void ExecuteInitSoundsWizard(Type pageType)
         {
             WizardSoundOn = SoundOn;
-            //WizardStartSound = _ttsModel.StartSound;
-            //WizardEndSound = _ttsModel.EndSound;
 
             ExecuteNavigate(pageType);
         }
@@ -514,8 +460,6 @@ namespace SpeechToText.ViewModels
             }
 
             TextToRead = "";
-
-            //_ttsModel.Clear();
         }
 
         /// <summary>
