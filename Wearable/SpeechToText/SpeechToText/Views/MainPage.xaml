@@ -33,7 +33,9 @@
                      Order="Primary"
                      Text="Settings"
                      Command="{Binding NavigateToSettingsCommand}"
-                     CommandParameter="{x:Type views:SettingsPage}"></w:CircleToolbarItem>
+                     CommandParameter="{x:Type views:SettingsPage}">
+            
+        </w:CircleToolbarItem>
     </w:CirclePage.ToolbarItems>
 
     <w:CirclePage.Content>
@@ -80,8 +82,8 @@
                 </Image>
 
                 <controls:SpeakButtonControl Recording="{Binding RecognitionActive}"
-                                           TurnOnCommand="{Binding RecognitionStartCommand}"
-                                           TurnOffCommand="{Binding RecognitionPauseCommand}" />
+                                           TurnOnCommand="{Binding RecognitionStartCommand}"/>
+                <!--TurnOffCommand="{Binding RecognitionPauseCommand}" />-->
                 
                 <Image Margin="-20, 0, 20, 0">
                     <Image.Behaviors>

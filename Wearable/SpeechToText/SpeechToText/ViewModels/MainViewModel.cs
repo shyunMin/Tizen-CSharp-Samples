@@ -34,25 +34,21 @@ namespace SpeechToText.ViewModels
         /// <summary>
         /// Private backing field for SoundOn property.
         /// </summary>
-        private bool _wizardSoundOn;
+        private bool _wizardSoundOn = true;
 
         /// <summary>
         /// An instance of the STT model.
         /// </summary>
         private TextToSpeechModel _ttsModel;
 
-        /// <summary>
-        /// Private backing field for AvailableStartEndSounds property.
-        /// </summary>
-        //private IEnumerable<string> _availableStartEndSounds;
+        private string _textToRead = "Xamarin.Forms";
+        private string _err;
+        private string _errMsg;
 
-
-        private string _textToRead;
-
-        /// <summary>
-        /// Private backing field for ServiceError property.
-        /// </summary>
-        private SttError _serviceError;
+        ///// <summary>
+        ///// Private backing field for ServiceError property.
+        ///// </summary>
+        //private SttError _serviceError;
 
         #endregion
 
@@ -205,18 +201,6 @@ namespace SpeechToText.ViewModels
             set => SetProperty(ref _wizardSoundOn, value);
         }
 
-        ///// <summary>
-        ///// Service error value.
-        ///// Property updated when service error occurs.
-        ///// </summary>
-        //public SttError ServiceError
-        //{
-        //    get => _serviceError;
-        //    set => SetProperty(ref _serviceError, value);
-        //}
-
-        string _err;
-        string _errMsg;
 
         public string ServiceError
         {
@@ -421,7 +405,7 @@ namespace SpeechToText.ViewModels
                 return;
             }
 
-            _ttsModel.Pause();
+            _ttsModel.Stop();
         }
 
         /// <summary>
@@ -431,10 +415,10 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void ExecuteRecognitionStop()
         {
-            if (!_ttsModel.Ready)
-            {
-                return;
-            }
+            //if (!_ttsModel.Ready)
+            //{
+            //    return;
+            //}
 
             _ttsModel.Stop();
         }
