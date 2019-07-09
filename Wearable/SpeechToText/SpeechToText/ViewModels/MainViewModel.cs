@@ -205,15 +205,24 @@ namespace SpeechToText.ViewModels
             set => SetProperty(ref _wizardSoundOn, value);
         }
 
-        /// <summary>
-        /// Service error value.
-        /// Property updated when service error occurs.
-        /// </summary>
-        public SttError ServiceError
+        ///// <summary>
+        ///// Service error value.
+        ///// Property updated when service error occurs.
+        ///// </summary>
+        //public SttError ServiceError
+        //{
+        //    get => _serviceError;
+        //    set => SetProperty(ref _serviceError, value);
+        //}
+
+        string _err;
+
+        public string ServiceError
         {
-            get => _serviceError;
-            set => SetProperty(ref _serviceError, value);
+            get => _err;
+            set => SetProperty(ref _err, value);
         }
+
 
         #endregion
 
@@ -225,11 +234,12 @@ namespace SpeechToText.ViewModels
         public MainViewModel()
         {
             System.Console.WriteLine($"MainViewModel ctor");
+            Console.WriteLine("++++++++++++ MainViewModel");
             try
             {
                 _ttsModel = new TextToSpeechModel(Application.Current.Properties);
                 _ttsModel.RecognitionActiveStateChanged += SttModelOnRecognitionActiveStateChanged;
-                _ttsModel.RecognitionError += SttModelOnRecognitionError;
+                //_ttsModel.RecognitionError += SttModelOnRecognitionError;
                 _ttsModel.ServiceError += SttModelOnServiceError;
             }
             catch (Exception ex)
@@ -238,29 +248,13 @@ namespace SpeechToText.ViewModels
             }
 
             InitCommands();
+
+            Console.WriteLine("++++++++++++ MainViewModel end");
         }
 
-        /// <summary>
-        /// Initializes the view model.
-        /// </summary>
-        /// <returns>The initialization task.</returns>
-        public async Task Init()
+        public void Init()
         {
-            var priviligesGranted = await _ttsModel.CheckPrivileges();
-
-            if (!priviligesGranted)
-            {
-                Device.StartTimer(TimeSpan.Zero, () =>
-                {
-                    PrivilegeDeniedInfoCommand?.Execute(null);
-                    // return false to run the timer callback only once
-                    return false;
-                });
-
-                return;
-            }
-
-            await _ttsModel.Init();
+            Console.WriteLine(" +++++++++ init");
         }
 
         /// <summary>
@@ -268,17 +262,18 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void InitCommands()
         {
+            Console.WriteLine("+++++++++InitCommands");
             NavigateCommand = new Command<Type>(ExecuteNavigate);
             NavigateBackCommand = new Command(ExecuteNavigateBack);
             NavigateToSettingsCommand = new Command<Type>(ExecuteNavigateToSettings);
-            ChangeLanguageCommand = new Command<string>(ExecuteChangeLanguage);
-            InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
-            WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
+            //ChangeLanguageCommand = new Command<string>(ExecuteChangeLanguage);
+            //InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
+            //WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
             RecognitionStartCommand = new Command(ExecuteRecognitionStart);
-            RecognitionPauseCommand = new Command(ExecuteRecognitionPause);
-            RecognitionStopCommand = new Command(ExecuteRecognitionStop);
+            //RecognitionPauseCommand = new Command(ExecuteRecognitionPause);
+            //RecognitionStopCommand = new Command(ExecuteRecognitionStop);
             ClearResultCommand = new Command(ExecuteClearResult);
-            PrivilegeDeniedConfirmedCommand = new Command(ExecutePrivilegeDeniedConfirmed);
+            Console.WriteLine("+++++++++InitCommands done");
         }
 
         /// <summary>
@@ -347,31 +342,6 @@ namespace SpeechToText.ViewModels
             ExecuteNavigateBack();
         }
 
-        ///// <summary>
-        ///// Handles execution of change recognition type command.
-        /////
-        ///// Updates current STT client recognition type.
-        ///// </summary>
-        ///// <param name="type">Recognition type to set.</param>
-        //private void ExecuteChangeRecognitionType(RecognitionType type)
-        //{
-        //    RecognitionType = type;
-
-        //    ExecuteNavigateBack();
-        //}
-
-        ///// <summary>
-        ///// Handles execution of change silence detection command.
-        /////
-        ///// Updates STT client silence detection value.
-        ///// </summary>
-        ///// <param name="value">Silence detection value to set.</param>
-        //private void ExecuteChangeSilenceDetection(SilenceDetection value)
-        //{
-        //    SilenceDetection = value;
-
-        //    ExecuteNavigateBack();
-        //}
 
         /// <summary>
         /// Handles execution of init sounds wizard command.
@@ -411,6 +381,8 @@ namespace SpeechToText.ViewModels
             {
                 return;
             }
+
+            Console.WriteLine($"+++++++++++++ ExecuteRecognitionStart Text = {TextToRead}");
 
             _ttsModel.Start();
 
@@ -463,22 +435,6 @@ namespace SpeechToText.ViewModels
         }
 
         /// <summary>
-        /// Handles execution of command which occurs when user confirms privilege denied dialog.
-        /// Closes the application.
-        /// </summary>
-        private void ExecutePrivilegeDeniedConfirmed()
-        {
-            try
-            {
-                global::Tizen.Applications.Application.Current.Exit();
-            }
-            catch (Exception)
-            {
-                global::Tizen.Log.Error("STT", "Unable to close the application");
-            }
-        }
-
-        /// <summary>
         /// Handles recognition active state change event from the model.
         /// Triggers "RecognitionActive" property change callback.
         /// </summary>
@@ -486,6 +442,7 @@ namespace SpeechToText.ViewModels
         /// <param name="eventArgs">Event arguments.</param>
         private void SttModelOnRecognitionActiveStateChanged(object sender, EventArgs eventArgs)
         {
+            Console.WriteLine("+++++++++++ SttModelOnRecognitionActiveStateChanged");
             OnPropertyChanged(nameof(RecognitionActive));
         }
 
@@ -506,9 +463,11 @@ namespace SpeechToText.ViewModels
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="serviceErrorEventArgs">Event arguments.</param>
-        private void SttModelOnServiceError(object sender, IServiceErrorEventArgs serviceErrorEventArgs)
+        private void SttModelOnServiceError(object sender, EventArgs args)
         {
-            ServiceError = serviceErrorEventArgs.Error;
+            //ServiceError = serviceErrorEventArgs.Error;
+
+            ServiceError = "Service Error";
 
             Device.StartTimer(TimeSpan.Zero, () =>
             {

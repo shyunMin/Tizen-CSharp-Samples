@@ -8,10 +8,4 @@
         <splash-screens />
     </ui-application>
     <shortcut-list />
-    <privileges>
-        <privilege>http://tizen.org/privilege/recorder</privilege>
-        <privilege>http://tizen.org/privilege/mediastorage</privilege>
-    </privileges>
-    <provides-appdefined-privileges />
-    <feature name="http://tizen.org/feature/microphone">true</feature>
 </manifest>

@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -81,7 +82,7 @@ namespace SpeechToText.Model
         /// Event invoked when STT service error occurs.
         /// Event arguments contains detailed information about the error.
         /// </summary>
-        public event EventHandler<IServiceErrorEventArgs> ServiceError;
+        public event EventHandler<EventArgs> ServiceError;
 
         /// <summary>
         /// Event invoked when recognition error occurs.
@@ -99,7 +100,7 @@ namespace SpeechToText.Model
         /// <summary>
         /// Flag indicating if model is ready for processing speech and changing settings.
         /// </summary>
-        public bool Ready => _sttService.Ready;
+        public bool Ready = true;
 
         /// <summary>
         /// Current STT model language (code).
@@ -134,7 +135,7 @@ namespace SpeechToText.Model
         /// <summary>
         /// Flag indicating if recognition is active.
         /// </summary>
-        public bool RecognitionActive => _sttService.RecognitionActive;
+        public bool RecognitionActive = false;
 
         #endregion
 
@@ -146,44 +147,43 @@ namespace SpeechToText.Model
         /// <param name="state">Persistent storage used to save state.</param>
         public TextToSpeechModel(IDictionary<string, object> state)
         {
-            _state = state;
-            _sttService = new SpeechToTextApiManager();
+            //_state = state;
+            //_sttService = new SpeechToTextApiManager();
             //_sttService.RecognitionResult += SttServiceOnRecognitionResult;
-            _sttService.RecognitionActiveStateChanged += SttServiceOnRecognitionActiveStateChanged;
-            _sttService.RecognitionError += SttServiceOnRecognitionError;
-            _sttService.ServiceError += SttServiceOnServiceError;
+            //_sttService.RecognitionActiveStateChanged += SttServiceOnRecognitionActiveStateChanged;
+            //_sttService.RecognitionError += SttServiceOnRecognitionError;
+            //_sttService.ServiceError += SttServiceOnServiceError;
         }
 
-        /// <summary>
-        /// Returns true if all required privileges are granted, false otherwise.
-        /// </summary>
-        /// <returns>Task with check result.</returns>
-        public async Task<bool> CheckPrivileges()
-        {
-            return await _sttService.CheckPrivileges();
-        }
+        ///// <summary>
+        ///// Returns true if all required privileges are granted, false otherwise.
+        ///// </summary>
+        ///// <returns>Task with check result.</returns>
+        //public async Task<bool> CheckPrivileges()
+        //{
+        //    return await _sttService.CheckPrivileges();
+        //}
 
-        /// <summary>
-        /// Initializes the model.
-        /// </summary>
-        /// <returns>Initialization task.</returns>
-        public async Task Init()
-        {
-            await _sttService.Init();
+        ///// <summary>
+        ///// Initializes the model.
+        ///// </summary>
+        ///// <returns>Initialization task.</returns>
+        //public async Task Init()
+        //{
+        //    //await _sttService.Init();
+        //    //RestoreState();
+        //}
 
-            RestoreState();
-        }
-
-        /// <summary>
-        /// Handles STT service error event.
-        /// Invokes own (class) similar event.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="serviceErrorEventArgs">Event arguments.</param>
-        private void SttServiceOnServiceError(object sender, IServiceErrorEventArgs serviceErrorEventArgs)
-        {
-            ServiceError?.Invoke(this, serviceErrorEventArgs);
-        }
+        ///// <summary>
+        ///// Handles STT service error event.
+        ///// Invokes own (class) similar event.
+        ///// </summary>
+        ///// <param name="sender">Event sender.</param>
+        ///// <param name="serviceErrorEventArgs">Event arguments.</param>
+        //private void SttServiceOnServiceError(object sender, IServiceErrorEventArgs serviceErrorEventArgs)
+        //{
+        //    ServiceError?.Invoke(this, serviceErrorEventArgs);
+        //}
 
         /// <summary>
         /// Handles recognition error event.
@@ -230,7 +230,18 @@ namespace SpeechToText.Model
                 _recognitionStopped = false;
             }
 
-            _sttService.Start(Language, RecognitionType.Free);
+            RecognitionActive = true;
+            Ready = false;
+            RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
+            //ServiceError?.Invoke(this, EventArgs.Empty);
+
+            Timer time = new Timer((state) =>
+            {
+                RecognitionActive = false;
+                Ready = true;
+                RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
+            }, null, 1000, Timeout.Infinite);
+
         }
 
         /// <summary>

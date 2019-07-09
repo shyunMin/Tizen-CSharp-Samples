@@ -26,7 +26,7 @@
                 </x:Arguments>
             </converters:FilePathToNameConverter>
 
-            <converters:SttErrorToDisplayMessage x:Key="SttErrorToDisplayNameConverter" />
+            <!--<converters:SttErrorToDisplayMessage x:Key="SttErrorToDisplayNameConverter" />-->
 
             <controls:DialogOK x:Key="RecognitionFailedDialog"
                                Title="Recognition failed"
@@ -35,14 +35,9 @@
 
             <controls:DialogOK x:Key="ServiceErrorDialog"
                                Title="Service error"
-                               Message="{Binding ServiceError, Converter={StaticResource SttErrorToDisplayNameConverter}}"
+                               Message="{Binding ServiceError}}"
                                ExecuteCommand="{Binding ServiceErrorInfoCommand} "/>
 
-            <controls:DialogOK x:Key="PrivilegeDeniedDialog"
-                               Title="Privilege denied"
-                               Message="Application will be closed due to required privilege denied."
-                               ExecuteCommand="{Binding PrivilegeDeniedInfoCommand}"
-                               ConfirmCommand="{Binding PrivilegeDeniedConfirmedCommand}" />
         </ResourceDictionary>
 
     </Application.Resources>
