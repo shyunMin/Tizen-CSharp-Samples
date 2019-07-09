@@ -216,6 +216,7 @@ namespace SpeechToText.ViewModels
         //}
 
         string _err;
+        string _errMsg;
 
         public string ServiceError
         {
@@ -223,6 +224,11 @@ namespace SpeechToText.ViewModels
             set => SetProperty(ref _err, value);
         }
 
+        public string ServiceErrorMessage
+        {
+            get => _errMsg;
+            set => SetProperty(ref _errMsg, value);
+        }
 
         #endregion
 
@@ -249,12 +255,13 @@ namespace SpeechToText.ViewModels
 
             InitCommands();
 
-            Console.WriteLine("++++++++++++ MainViewModel end");
         }
 
-        public void Init()
+        public async Task InitAsync()
         {
-            Console.WriteLine(" +++++++++ init");
+            Console.WriteLine(" +++++++++ MainViewModel init");
+
+            await _ttsModel.InitAsync();
         }
 
         /// <summary>
@@ -262,18 +269,16 @@ namespace SpeechToText.ViewModels
         /// </summary>
         private void InitCommands()
         {
-            Console.WriteLine("+++++++++InitCommands");
             NavigateCommand = new Command<Type>(ExecuteNavigate);
             NavigateBackCommand = new Command(ExecuteNavigateBack);
             NavigateToSettingsCommand = new Command<Type>(ExecuteNavigateToSettings);
-            //ChangeLanguageCommand = new Command<string>(ExecuteChangeLanguage);
-            //InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
-            //WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
+            ChangeLanguageCommand = new Command<string>(ExecuteChangeLanguage);
+            InitSoundsWizardCommand = new Command<Type>(ExecuteInitSoundsWizard);
+            WizardSaveSoundSettingsCommand = new Command(ExecuteWizardSaveSoundSettings);
             RecognitionStartCommand = new Command(ExecuteRecognitionStart);
             //RecognitionPauseCommand = new Command(ExecuteRecognitionPause);
-            //RecognitionStopCommand = new Command(ExecuteRecognitionStop);
+            RecognitionStopCommand = new Command(ExecuteRecognitionStop);
             ClearResultCommand = new Command(ExecuteClearResult);
-            Console.WriteLine("+++++++++InitCommands done");
         }
 
         /// <summary>
@@ -367,7 +372,7 @@ namespace SpeechToText.ViewModels
             _ttsModel.SoundOn = WizardSoundOn;
             OnPropertyChanged(nameof(SoundOn));
 
-            //ExecuteNavigateBack();
+            ExecuteNavigateBack();
         }
 
         /// <summary>
@@ -382,9 +387,24 @@ namespace SpeechToText.ViewModels
                 return;
             }
 
+            if(string.IsNullOrEmpty(TextToRead))
+            {
+                Console.WriteLine("+++ turn on sound");
+                ShowErrorDialog("Service Error", "Please input any text");
+                return;
+            }
+
+            if(!SoundOn)
+            {
+                Console.WriteLine("+++ turn on sound");
+                ShowErrorDialog("Service Error", "Please turn on sound");
+                return;
+            }
+
+
             Console.WriteLine($"+++++++++++++ ExecuteRecognitionStart Text = {TextToRead}");
 
-            _ttsModel.Start();
+            _ttsModel.StartAsync(TextToRead);
 
             Console.WriteLine($"+++++++++++++ ExecuteRecognitionStart Text = {TextToRead}");
         }
@@ -465,9 +485,13 @@ namespace SpeechToText.ViewModels
         /// <param name="serviceErrorEventArgs">Event arguments.</param>
         private void SttModelOnServiceError(object sender, EventArgs args)
         {
-            //ServiceError = serviceErrorEventArgs.Error;
+            ShowErrorDialog("Service Error", "Service Error Message");
+        }
 
-            ServiceError = "Service Error";
+        void ShowErrorDialog(string err, string msg)
+        {
+            ServiceError = err;
+            ServiceErrorMessage = msg;
 
             Device.StartTimer(TimeSpan.Zero, () =>
             {

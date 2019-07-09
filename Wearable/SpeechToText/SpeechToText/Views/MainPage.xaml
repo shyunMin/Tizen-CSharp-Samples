@@ -16,7 +16,7 @@
         <ResourceDictionary>
             <converters:BoolToStringConverter x:Key="RecognitionStateToTipTextConverter">
                 <x:Arguments>
-                    <x:String>Tap to pause</x:String>
+                    <x:String>Reading...</x:String>
                     <x:String>Tap to read</x:String>
                 </x:Arguments>
             </converters:BoolToStringConverter>

@@ -34,8 +34,8 @@
                                ExecuteCommand="{Binding RecognitionFailedInfoCommand}" />
 
             <controls:DialogOK x:Key="ServiceErrorDialog"
-                               Title="Service error"
-                               Message="{Binding ServiceError}}"
+                               Title="{Binding ServiceError}}"
+                               Message="{Binding ServiceErrorMessage}}"
                                ExecuteCommand="{Binding ServiceErrorInfoCommand} "/>
 
         </ResourceDictionary>

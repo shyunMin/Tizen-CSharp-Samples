@@ -64,8 +64,7 @@ namespace SpeechToText
 
             AppViewModel.Navigation = MainPage.Navigation;
 
-            model.Init();
-            //await model.Init();
+            await model.InitAsync();
         }
 
         /// <summary>

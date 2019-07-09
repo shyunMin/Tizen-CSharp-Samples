@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SpeechToText.Model
@@ -56,13 +57,19 @@ namespace SpeechToText.Model
         /// <summary>
         /// Private backing field for SoundOn property.
         /// </summary>
-        private bool _soundOn;
+        private bool _soundOn = true;
 
         /// <summary>
         /// Flag indicating if recognition was stopped.
         /// Stopped recognition cannot be continued (only restarted).
         /// </summary>
         private bool _recognitionStopped;
+
+        private IEnumerable<Locale> _locales;
+
+        private CancellationTokenSource _cts;
+
+
 
         #endregion
 
@@ -95,7 +102,7 @@ namespace SpeechToText.Model
         /// The language is specified as an ISO 3166 alpha-2 two letter country-code
         /// followed by ISO 639-1 for the two-letter language code.
         /// </summary>
-        public IEnumerable<string> SupportedLanguages => _sttService.SupportedLanguages;
+        public IEnumerable<string> SupportedLanguages { get; private set; }
 
         /// <summary>
         /// Flag indicating if model is ready for processing speech and changing settings.
@@ -124,11 +131,13 @@ namespace SpeechToText.Model
             get => _soundOn;
             set
             {
+                //_soundOn = value;
+
+
+                //_state[STATE_SETTINGS_SOUND_ON_KEY] = _soundOn;
+                //Application.Current.SavePropertiesAsync();
+
                 _soundOn = value;
-
-
-                _state[STATE_SETTINGS_SOUND_ON_KEY] = _soundOn;
-                Application.Current.SavePropertiesAsync();
             }
         }
 
@@ -153,37 +162,18 @@ namespace SpeechToText.Model
             //_sttService.RecognitionActiveStateChanged += SttServiceOnRecognitionActiveStateChanged;
             //_sttService.RecognitionError += SttServiceOnRecognitionError;
             //_sttService.ServiceError += SttServiceOnServiceError;
+        }        
+
+        public async Task InitAsync()
+        {
+            _locales = await TextToSpeech.GetLocalesAsync();
+
+            List<string> list = new List<string>();
+            foreach (var locale in _locales)
+                list.Add(locale.Language);
+
+            SupportedLanguages = list;
         }
-
-        ///// <summary>
-        ///// Returns true if all required privileges are granted, false otherwise.
-        ///// </summary>
-        ///// <returns>Task with check result.</returns>
-        //public async Task<bool> CheckPrivileges()
-        //{
-        //    return await _sttService.CheckPrivileges();
-        //}
-
-        ///// <summary>
-        ///// Initializes the model.
-        ///// </summary>
-        ///// <returns>Initialization task.</returns>
-        //public async Task Init()
-        //{
-        //    //await _sttService.Init();
-        //    //RestoreState();
-        //}
-
-        ///// <summary>
-        ///// Handles STT service error event.
-        ///// Invokes own (class) similar event.
-        ///// </summary>
-        ///// <param name="sender">Event sender.</param>
-        ///// <param name="serviceErrorEventArgs">Event arguments.</param>
-        //private void SttServiceOnServiceError(object sender, IServiceErrorEventArgs serviceErrorEventArgs)
-        //{
-        //    ServiceError?.Invoke(this, serviceErrorEventArgs);
-        //}
 
         /// <summary>
         /// Handles recognition error event.
@@ -201,32 +191,35 @@ namespace SpeechToText.Model
         /// </summary>
         private void RestoreState()
         {
-            Language = _state.ContainsKey(STATE_SETTINGS_LANGUAGE_KEY) ?
-                (string)_state[STATE_SETTINGS_LANGUAGE_KEY] : _sttService.DefaultLanguage;
+            //Language = _state.ContainsKey(STATE_SETTINGS_LANGUAGE_KEY) ?
+            //    (string)_state[STATE_SETTINGS_LANGUAGE_KEY] : _sttService.DefaultLanguage;
 
-            SoundOn = _state.ContainsKey(STATE_SETTINGS_SOUND_ON_KEY) &&
-                (bool)_state[STATE_SETTINGS_SOUND_ON_KEY];
+            SoundOn = true;
+
+            //Set Language and sound on
         }
 
-        /// <summary>
-        /// Handles recognition active state change event.
-        /// Fires own (class) similar event.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="eventArgs">Event arguments.</param>
-        private void SttServiceOnRecognitionActiveStateChanged(object sender, EventArgs eventArgs)
-        {
-            RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
-        }
+        ///// <summary>
+        ///// Handles recognition active state change event.
+        ///// Fires own (class) similar event.
+        ///// </summary>
+        ///// <param name="sender">Event sender.</param>
+        ///// <param name="eventArgs">Event arguments.</param>
+        //private void SttServiceOnRecognitionActiveStateChanged(object sender, EventArgs eventArgs)
+        //{
+        //    RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
+        //}
+
+
+        Task _task;
 
         /// <summary>
         /// Starts the recognition.
         /// </summary>
-        public void Start()
+        public async Task StartAsync(string text)
         {
             if (_recognitionStopped)
             {
-                Clear();
                 _recognitionStopped = false;
             }
 
@@ -235,12 +228,43 @@ namespace SpeechToText.Model
             RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
             //ServiceError?.Invoke(this, EventArgs.Empty);
 
-            Timer time = new Timer((state) =>
+            //_time = new Timer((state) =>
+            //{
+            //    RecognitionActive = false;
+            //    Ready = true;
+            //    RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
+            //}, null, 2000, Timeout.Infinite);
+
+            _cts = new CancellationTokenSource();
+
+            var options = new SpeechOptions();
+
+            options.Pitch = 2.0f;
+            options.Volume = 1.0f;
+
+            var locale = _locales.FirstOrDefault();
+            foreach (var item in _locales)
             {
-                RecognitionActive = false;
-                Ready = true;
-                RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
-            }, null, 1000, Timeout.Infinite);
+                if (item.Language == Language)
+                {
+                    locale = item;
+                    break;
+                }
+            }
+
+            if (locale != null)
+            {
+                options.Locale = locale;
+            }
+
+            //Ready = false;
+            //RecognitionActive = true;
+            //RecognitionActiveStateChanged?.Invoke(this, EventArgs.Empty);
+
+            await TextToSpeech.SpeakAsync(text, options, _cts.Token);
+            RecognitionActive = false;
+            Ready = true;
+            RecognitionActiveStateChanged?.Invoke(this, new EventArgs());
 
         }
 
@@ -258,18 +282,13 @@ namespace SpeechToText.Model
         /// </summary>
         public void Stop()
         {
-            _sttService.Stop();
-            _recognitionStopped = true;
-        }
+            if(_cts == null)
+            {
+                return;
+            }
 
-        /// <summary>
-        /// Clears recognition result.
-        /// Unlocks recognition start.
-        /// </summary>
-        public void Clear()
-        {
-            //_results.Clear();
-            ResultChanged?.Invoke(this, new EventArgs());
+            _cts.Cancel();
+            _recognitionStopped = true;
         }
 
         #endregion
